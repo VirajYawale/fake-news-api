@@ -1,6 +1,5 @@
 flask
 flask-cors
-numpy == 2.0.2
+numpy==1.26.4
 gunicorn
 tensorflow==2.19.0
-keras==2.13.1

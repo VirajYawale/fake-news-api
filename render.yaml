@@ -1,12 +1,6 @@
-
 services:
   - type: web
     name: fake-news-api
-    env: python
+    runtime: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --timeout 120
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.4
- 
-
+    startCommand: gunicorn app:app --timeout 120 --workers 1

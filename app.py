@@ -9,36 +9,35 @@ CORS(app)
 MAXLEN    = 1000
 THRESHOLD = 0.8
 
-# ── Load model ───────────────────────────────────────────────
-print("Loading LSTM model...")
+print("Loading model...")
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # silence TF warnings
+
 import tensorflow as tf
-from tensorflow import keras
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
+# compile=False skips optimizer loading — avoids batch_shape errors
 model = load_model("saved_model.keras", compile=False)
 print("Model loaded!")
 
 print("Loading tokenizer...")
 with open("tokenizer.pkl", "rb") as f:
     tokenizer = pickle.load(f)
-print("Tokenizer loaded! API ready.")
+print("API ready!")
 
-# ── Clean text ───────────────────────────────────────────────
 def clean_text(text):
     text = str(text).lower()
     text = re.sub(r'[^A-Za-z0-9\s]', '', text)
-    text = re.sub(r'\s+', ' ', text).strip()
-    return text
+    return re.sub(r'\s+', ' ', text).strip()
 
-# ── Routes ───────────────────────────────────────────────────
 @app.route("/")
 def home():
     return jsonify({
         "status":   "running",
         "model":    "virajyawale/fakenewsdetection",
         "type":     "Keras LSTM + Word2Vec",
-        "accuracy": "98.8%"
+        "accuracy": "98.8%",
+        "tf":       tf.__version__
     })
 
 @app.route("/predict", methods=["POST"])
